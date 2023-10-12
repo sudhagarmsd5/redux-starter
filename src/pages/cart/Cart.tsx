@@ -26,26 +26,26 @@ const Cart = () => {
 
     /* Methods */
     function calculateSubTotal() {
-        let value = cart.reduce((total, product: IProductItems) => {
+        let value: any = cart.reduce((total, product: IProductItems) => {
             return total + (parseFloat(product.price) * product.quantity);
         }, 0)
         value = parseFloat(value).toFixed(2)
         return value;
     }
 
-    function increment(e) {
+    function increment(e: IProductItems) {
         dispatch(incrementItem(e))
     }
 
-    function decrement(e) {
+    function decrement(e: IProductItems) {
         dispatch(decrementItem(e))
     }
 
     function clear() {
-        dispatch(clearItems({}))
+        dispatch(clearItems())
     }
 
-    function remove(val: any) {
+    function remove(val: IProductItems) {
         dispatch(removeItem(val))
     }
 

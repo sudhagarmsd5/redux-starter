@@ -1,5 +1,6 @@
-import {createSlice, current} from "@reduxjs/toolkit";
+import {createSlice, current, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../store.ts";
+import {IProductItems} from "../product/interface.ts";
 
 const initialState = {
     cartItems: [], cartTotal: 0, isLoading: false, isApiCallInProgress: false, apiCallSuccess: false,
@@ -20,7 +21,7 @@ export const cartSlice = createSlice({
                 isLoading: false
             }
         },
-        error: (state, action) => {
+        error: (state) => {
             return {...state, isLoading: false}
         },
         startApi: (state) => {
@@ -29,7 +30,7 @@ export const cartSlice = createSlice({
                 isApiCallInProgress: true,
             }
         },
-        sucessApi: (state, action) => {
+        successApi: (state, action) => {
             return {
                 ...state,
                 ...action.payload,
@@ -42,11 +43,11 @@ export const cartSlice = createSlice({
                 isApiCallInProgress: false
             }
         },
-        addItem: (state, action,) => {
-            let oldState = current(state.cartItems);
-            let data = action.payload;
-            const isId = obj => obj.id === data.id;
-            let isDuplicate = oldState.some(isId)
+        addItem: (state, action: PayloadAction,) => {
+            const oldState = current(state.cartItems);
+            const data: any = action.payload;
+            const isId = (obj: { id: string; }) => obj.id === data.id;
+            const isDuplicate = oldState.some(isId)
             if (oldState.length == 0) {
                 return {...state, cartItems: [...oldState, action.payload]}
             } else if (!isDuplicate) {
@@ -54,15 +55,15 @@ export const cartSlice = createSlice({
             }
         },
         incrementItem: (state, action) => {
-            let oldState = current(state.cartItems);
-            let data = action.payload;
-            let quantity = oldState.map((value) => {
+            const oldState = current(state.cartItems);
+            const data = action.payload;
+            const quantity = oldState.map((value: IProductItems) => {
                 if (value.id === data.id) {
                     return {...value, quantity: value.quantity + 1}
                 }
                 return value;
             })
-            let finalData = oldState.map((value, index) => {
+            const finalData = oldState.map((value: IProductItems, index) => {
                 if (value.id === quantity[index].id) {
                     return quantity[index]
                 }
@@ -71,9 +72,9 @@ export const cartSlice = createSlice({
             return {...state, cartItems: finalData}
         },
         decrementItem: (state, action) => {
-            let oldState = current(state.cartItems);
-            let data = action.payload;
-            let quantity = oldState.map((value) => {
+            const oldState = current(state.cartItems);
+            const data = action.payload;
+            const quantity = oldState.map((value: IProductItems) => {
                 if (value.id === data.id) {
                     if (value.quantity === 1) {
                         return {...value, quantity: 1}
@@ -84,7 +85,7 @@ export const cartSlice = createSlice({
                 return value;
             })
 
-            let finalData = oldState.map((value, index) => {
+            const finalData = oldState.map((value: IProductItems, index) => {
                 if (value.id === quantity[index].id) {
                     return quantity[index]
                 }
@@ -96,9 +97,9 @@ export const cartSlice = createSlice({
             return {...state, cartItems: []}
         },
         removeItem: (state, action) => {
-            let oldState = current(state.cartItems);
-            let data = action.payload;
-            let finalData = oldState.filter((value, index) => {
+            const oldState = current(state.cartItems);
+            const data = action.payload;
+            const finalData = oldState.filter((value: IProductItems) => {
                 return value.id !== data.id
             })
             return {...state, cartItems: finalData}
@@ -109,6 +110,9 @@ export const cartSlice = createSlice({
 
 export const selectCartList = (state: RootState) => state.cart
 
-export const {start, success, error, startApi, sucessApi, errorApi, addItem, incrementItem, decrementItem, clearItems, removeItem} = cartSlice.actions;
+export const {
+    addItem, incrementItem, decrementItem, clearItems, removeItem
+}
+    = cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;
