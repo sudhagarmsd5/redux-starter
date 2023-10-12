@@ -1,12 +1,12 @@
 import './App.css'
 import Products from "./pages/products/Products.tsx"
 import Cart from "./pages/cart/Cart.tsx";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createHashRouter, RouterProvider} from "react-router-dom";
 import Layout from "./components/shared/Layout.tsx";
 
 function App() {
 
-    const router = createBrowserRouter([{
+    const router = createHashRouter([{
         path: "/",
         Component: Layout,
         children: [
